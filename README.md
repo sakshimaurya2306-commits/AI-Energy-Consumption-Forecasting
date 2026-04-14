@@ -1,26 +1,20 @@
-# ⚡ AI-Powered Energy Consumption Forecasting System
+# ⚡ AI-Powered Energy Consumption Forecasting
 
-> Predicting electricity demand using Neural Networks to help smart cities, power grids, and buildings optimize energy usage and reduce carbon emissions.
+## 📌 Overview
+The AI-Powered Energy Consumption Forecasting project is a machine learning-based system designed to predict future energy consumption using historical data.  
+It helps in understanding usage patterns, reducing energy wastage, and improving smart energy management systems.
 
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.5-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=flat-square&logo=flask&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-
----
-
-## 🔍 Problem Statement
-
-Power grids fail to balance supply and demand — causing blackouts, energy wastage, and high costs. **70% of India's power loss is due to poor forecasting.** This project uses AI to predict hourly electricity consumption so energy can be planned, not guessed.
+This project uses machine learning techniques in Python to analyze past energy usage and generate accurate future predictions.
 
 ---
 
-## 🏭 Industry Relevance
-
-Companies actively hiring for this skill:
-**Google · Microsoft · Siemens · Schneider Electric · Tata Power · TCS · Infosys · Wipro · ABB · GE**
-
-The global AI energy forecasting market is projected to hit **$60 Billion by 2030**.
+## 🚀 Features
+- Predicts future energy consumption using historical data  
+- Visualizes energy usage trends and patterns  
+- Machine learning-based forecasting model  
+- Data preprocessing and feature engineering  
+- Model evaluation using performance metrics  
+- Can be integrated into smart dashboards  
 
 ---
 
@@ -35,119 +29,114 @@ The global AI energy forecasting market is projected to hit **$60 Billion by 203
 | Flask | REST API deployment |
 | Joblib | Model serialization |
 
+
+
+
 ---
 
-## 📁 Project Structure
-
+## 📂 Project Structure
 ```
 AI-Energy-Forecasting/
-├── data/               ← Smart grid dataset (auto-generated)
-├── notebooks/          ← EDA Jupyter notebook
+│
+├── data/
+│   └── energy.csv
+│
+├── models/
+│   └── model.pkl   (auto-created after training)
+│
 ├── src/
-│   ├── preprocess.py   ← Data loading + feature engineering
-│   ├── train_model.py  ← Model training + evaluation
-│   └── visualize.py    ← All chart generation
-├── models/             ← Saved .pkl model files
-├── outputs/graphs/     ← Generated visualizations
-├── templates/          ← Flask HTML dashboard
-├── app.py              ← REST API
-├── main.py             ← Full pipeline runner
-└── requirements.txt
+│   ├── data_loader.py
+│   ├── features.py
+│   ├── train.py
+│   ├── predict.py
+│
+├── app/
+│   ├── app.py
+│   ├── templates/
+│   │   └── index.html
+│   ├── static/
+│   │   └── style.css
+│
+├── outputs/
+│   └── (graphs/images)
+│
+├── requirements.txt
+├── README.md
+└── main.py
 ```
+
 
 ---
 
-## 🚀 Quick Start
+## ⚙️ Installation & Setup
 
-### 1. Clone & Setup
+### 1. Clone the repository
 
-```bash
-git clone https://github.com/YOUR_USERNAME/AI-Energy-Forecasting.git
-cd AI-Energy-Forecasting
+git clone https://github.com/sakshimaurya2306-commits/AI-Powered-Energy-Forecasting.git
 
-# Windows
-python -m venv venv
-venv\Scripts\activate
 
-# Mac/Linux
-python3 -m venv venv
-source venv/bin/activate
+### 2. Install dependencies
 
 pip install -r requirements.txt
-```
 
-### 2. Run the Full Pipeline
 
-```bash
-python main.py
-```
+### 3. Run the project
+python  main.py
+python -m app.app
+or
+python app/app.py
 
-This will:
-- Generate a 2-year synthetic smart grid dataset
-- Train MLP Neural Network + Random Forest
-- Evaluate models and print metrics
-- Save all 5 visualization graphs
 
-### 3. Launch the Web Dashboard
-
-```bash
-python app.py
-# Open: http://127.0.0.1:5000
-```
-
-### 4. Use the REST API
-
-```bash
-# Single prediction
-curl -X POST http://127.0.0.1:5000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"hour":14,"day":2,"month":6,"is_weekend":0,"lag_1h":18.5,"lag_24h":17.2,"rolling_mean_24h":17.8}'
-
-# 24-hour batch forecast
-curl -X POST http://127.0.0.1:5000/batch_predict \
-  -H "Content-Type: application/json" \
-  -d '{"start_hour":8,"day":1,"month":6,"is_weekend":0,"lag_1h":16.0,"lag_24h":15.5,"rolling_mean_24h":16.2}'
-```
 
 ---
 
-## 📊 Model Results
-
-| Metric | MLP Neural Network | Random Forest |
-|--------|-------------------|---------------|
-| R² Score | **0.94** | 0.91 |
-| MAE (kWh) | **1.2** | 1.5 |
-| RMSE (kWh) | **1.6** | 2.0 |
-
----
-
-## 🗂️ Generated Outputs
-
-| File | Description |
-|------|-------------|
-| `01_energy_trend.png` | 30-day hourly consumption trend |
-| `02_hourly_pattern.png` | Average usage by hour of day |
-| `03_weekly_heatmap.png` | Day × Hour energy heatmap |
-| `04_actual_vs_predicted.png` | Model accuracy visualization |
-| `05_feature_importance.png` | Which features matter most |
+## 📊 How It Works
+1. Load historical energy consumption data  
+2. Clean and preprocess the dataset  
+3. Train a machine learning model  
+4. Evaluate model performance  
+5. Predict future energy consumption  
+6. Visualize results using graphs  
 
 ---
 
-## 🎓 Learning Outcomes
-
-- End-to-end ML pipeline design
-- Time-series feature engineering (lag features, rolling stats)
-- Comparing neural networks vs ensemble models
-- REST API deployment with Flask
-- Production model serialization
+## 📈 Results
+- Accurate prediction of energy consumption trends  
+- Better understanding of usage patterns  
+- Useful insights for energy optimization  
 
 ---
 
-## 📌 Author
-
-Built as a portfolio project demonstrating AI skills in the energy domain.  
-Aligned with real-world use cases at **smart grid companies** and **clean tech startups**.
+## 🔮 Future Improvements
+- Real-time energy prediction system  
+- IoT integration with smart meters  
+- Deep learning (LSTM-based forecasting)  
+- Cloud deployment for scalability  
 
 ---
 
-*"Engineers with AI + energy domain knowledge earn 30–50% higher than regular data scientists."*
+## 📸 Screenshots
+
+![Dashboard](images/dashboard.jpeg)
+---
+
+![Actual vs Predicted](images/Actual_vs_predicted.jpeg)
+---
+
+![Energy Trends](images/Energy_trends.jpeg)
+---
+
+![Weekly Usage](images/Weekly_usage.jpeg)
+---
+
+![Hourly Usage](images/Hourly_usage.jpeg)
+---
+
+![Error Analysis](images/Error_analysis.jpeg)
+
+---
+
+👨‍💻 Author
+
+Sakshi Ramakabal Maurya B.Tech in Information Technology at K.j. Somaiya institute of technology
+
