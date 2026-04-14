@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Energy Intelligence</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="/static/style.css">
+
+</head>
+<body>
+
+<div class="dashboard">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>⚡ AI Energy</h2>
+    <ul>
+        <li class="active">Dashboard</li>
+        <li>Analytics</li>
+        <li>Models</li>
+    </ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1 class="title">⚡ AI Energy Consumption Forecasting </h1>
+
+<div id="dashboard" class="section">
+<!-- KPI -->
+<div class="kpis">
+    <div class="card">
+        <p>Average</p>
+        <h2>{{ avg }}</h2>
+    </div>
+
+    <div class="card">
+        <p>Maximum</p>
+        <h2>{{ max_val }}</h2>
+    </div>
+
+    <div class="card">
+        <p>Minimum</p>
+        <h2>{{ min_val }}</h2>
+    </div>
+</div>
+
+<!-- PREDICTION -->
+<div class="panel">
+    <h3>⚡ Predict Energy</h3>
+
+    <form method="POST" action="/predict">
+        <input name="hour" placeholder="Hour (0-23)" required>
+        <input name="day" placeholder="Day (0-6)" required>
+        <button>Predict</button>
+    </form>
+
+    <div class="result">
+        <p>Linear: {{ pred_lr }}</p>
+        <p>MLP: {{ pred_mlp }}</p>
+    </div>
+</div>
+</div>
+
+<div id="analytics" class="section">
+<!-- CHART GRID -->
+<div class="grid">
+
+<div class="chart-box">
+<h3>📈 Energy Trend</h3>
+<canvas id="g1"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>🔍 Actual vs Predicted</h3>
+<canvas id="g2"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>⏰ Hourly Usage</h3>
+<canvas id="g3"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>📅 Weekly Usage</h3>
+<canvas id="g4"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>🧠 Model Comparison</h3>
+<canvas id="g5"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>📉 Error Analysis</h3>
+<canvas id="g6"></canvas>
+</div>
+
+</div>
+
+</div>
+
+<div id="models" class="section" style="display:none;">
+    <div class="panel">
+        <h3>🧠 Model Info</h3>
+        <p>Linear Regression & MLP used for prediction</p>
+        <p>MAE (Linear): {{ mae_lr }}</p>
+        <p>MAE (MLP): {{ mae_mlp }}</p>
+    </div>
+
+</div>
+</div>
+</div>
+
+<!-- ✅ SCRIPT AT BOTTOM -->
+<script>
+
+// ✅ DATA FROM FLASK
+let ts = {{ time_series | tojson | safe }};
+let pred = {{ predicted | tojson | safe }};
+let hourly = {{ hourly | tojson | safe }};
+let weekly = {{ weekly | tojson | safe }};
+let error = {{ error | tojson | safe }};
+let mae_lr = {{ mae_lr | default(0) }};
+let mae_mlp = {{ mae_mlp | default(0) }};
+
+// 🔥 RESET CANVAS (IMPORTANT)
+document.querySelectorAll("canvas").forEach(c => {
+    const newCanvas = c.cloneNode(true);
+    c.parentNode.replaceChild(newCanvas, c);
+});
+
+// 🎯 COMMON OPTIONS
+const commonOptions = {
+    animation: {
+        duration: 1200,
+        easing: 'easeInOutQuart'
+    },
+    responsive: true,
+    maintainAspectRatio: false
+};
+
+// 🎯 CHART 1: ENERGY TREND
+new Chart(document.getElementById("g1"), {
+    type:'line',
+    data:{
+        labels: ts.map((_,i)=>i),
+        datasets:[{
+            label:'Energy',
+            data:ts,
+            borderWidth:2,
+            tension:0.4
+        }]
+    },
+    options: commonOptions
+});
+
+// 🎯 CHART 2: ACTUAL VS PREDICTED
+new Chart(document.getElementById("g2"), {
+    type:'line',
+    data:{
+        labels: ts.map((_,i)=>i),
+        datasets:[
+            {
+                label:'Actual',
+                data:ts,
+                borderWidth:2,
+                tension:0.4
+            },
+            {
+                label:'Predicted',
+                data:pred,
+                borderWidth:2,
+                tension:0.4
+            }
+        ]
+    },
+    options: commonOptions
+});
+
+// 🎯 CHART 3: HOURLY
+new Chart(document.getElementById("g3"), {
+    type:'bar',
+    data:{
+        labels:[...Array(24).keys()],
+        datasets:[{
+            label:'Hourly Usage',
+            data:hourly
+        }]
+    },
+    options: commonOptions
+});
+
+// 🎯 CHART 4: WEEKLY
+new Chart(document.getElementById("g4"), {
+    type:'bar',
+    data:{
+        labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets:[{
+            label:'Weekly Usage',
+            data:weekly
+        }]
+    },
+    options: commonOptions
+});
+
+// 🎯 CHART 5: MODEL COMPARISON
+new Chart(document.getElementById("g5"), {
+    type:'bar',
+    data:{
+        labels:['Linear','MLP'],
+        datasets:[{
+            label:'MAE',
+            data:[mae_lr, mae_mlp]
+        }]
+    },
+    options: commonOptions
+});
+
+// 🎯 CHART 6: ERROR
+new Chart(document.getElementById("g6"), {
+    type:'line',
+    data:{
+        labels:error.map((_,i)=>i),
+        datasets:[{
+            label:'Error',
+            data:error,
+            borderWidth:2,
+            tension:0.4
+        }]
+    },
+    options: commonOptions
+});
+
+function showSection(sectionId) {
+
+    // hide all sections
+    document.querySelectorAll('.section').forEach(sec => {
+        sec.style.display = 'none';
+    });
+
+    // show selected
+    document.getElementById(sectionId).style.display = 'block';
+
+    // update active sidebar
+    document.querySelectorAll('.sidebar li').forEach(li => {
+        li.classList.remove('active');
+    });
+
+    event.target.classList.add('active');
+}
+
+</script>
+
+</body>
+</html>
